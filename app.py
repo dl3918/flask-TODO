@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
+# config: a dictionary (as mentioned by the video tutorial) which stores manage setup variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -13,13 +14,13 @@ class Todo(db.Model):
     title = db.Column(db.String(100))
     complete = db.Column(db.Boolean)
 
-
+# only use a forward slash /because this is going to be our start page.
 @app.route("/")
 def home():
     todo_list = Todo.query.all()
     return render_template("base.html", todo_list=todo_list)
 
-
+# if we go to /add, we see content defined by the add function
 @app.route("/add", methods=["POST"])
 def add():
     title = request.form.get("title")
@@ -28,7 +29,7 @@ def add():
     db.session.commit()
     return redirect(url_for("home"))
 
-
+# similarly
 @app.route("/update/<int:todo_id>")
 def update(todo_id):
     todo = Todo.query.filter_by(id=todo_id).first()
